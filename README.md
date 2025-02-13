@@ -6,8 +6,9 @@
 1) Виконується команда composer install
 2) Виконується команда php artisan key:generate
 3) В env вказуються доступи до БД
-4) Вводиться php artisan migrate
-5) Вводиться php artisan opotimize
+4) Потрібно імпортувати файл БД в базу даних (він був виданий разом з ТЗ)
+5) Вводиться php artisan migrate
+6) Вводиться php artisan opotimize
 
 Команда для запуску основного дійства: php artisan csv:import storage/app/stock.csv
 
