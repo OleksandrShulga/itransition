@@ -1,66 +1,48 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Привіт всім, хто читає ці рядки! Це тестове завдання від компанії Itransition. ТЗ буде дещо нижче, зараз коротко про порядок розгортання проекту:
+Вимоги:
+- php 8.2
+- mariaDB 10.x
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+1) Виконується команда composer install
+2) Виконується команда php artisan key:generate
+3) В env вказуються доступи до БД
+4) Вводиться php artisan migrate
+5) Вводиться php artisan opotimize
 
-## About Laravel
+Команда для запуску основного дійства: php artisan csv:import storage/app/stock.csv
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Перевірка PHPUnit тесту: php artisan test --filter={Назва тесту}
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+Технічне завдання:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Проблема: Для того щоб додати нові та цікаві продукти на сайт, потрібно обробити CSV файл від постачальника. Цей файл містить інформацію про продукти, яку потрібно витягнути та вставити в таблицю бази даних. Крім того, потрібно застосувати кілька простих бізнес-правил до даних, які ми імпортуємо. Таблиця вже існує для отримання цієї інформації, але її потрібно дещо відредагувати для коректної роботи з цим файлом.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Рішення: Необхідно створити механізм, який зчитує CSV файл, парсить вміст і потім вставляє дані в таблицю MySQL. Процес імпорту буде виконуватися з командного рядка, і після завершення необхідно буде вивести звіт про кількість оброблених елементів, скільки з них було успішно оброблено і скільки було пропущено. Дивіться правила імпорту нижче.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Цілі: Ваше рішення має бути об'єктно-орієнтованим, слідуючи принципам SOLID, на основі будь-якого PHP фреймворку (Symfony, Laravel тощо) і використовувати MySQL. Код має бути чітко структурований, добре коментований і покритий юніт-тестами. Будь-які SQL, використані для зміни таблиці, повинні бути включені як скрипти міграції в поданні.
 
-## Laravel Sponsors
+За допомогою аргументів командного рядка скрипт можна запустити в режимі «test». Це виконає всі операції звичайного імпорту, але не вставить дані в базу даних.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Постачальник надає рівень запасів і ціну, які ми зараз не зберігаємо. Використовуючи відповідні типи даних, додайте два стовпці до таблиці для збереження цієї інформації.
 
-### Premium Partners
+Результат повинен бути представлений у вигляді pull request, який містить тільки код, пов'язаний із проблемою (за винятком початкового коміту проекту фреймворку).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Правила імпорту:
 
-## Contributing
+    Будь-який товар, який коштує менше ніж $5 і має менше ніж 10 одиниць на складі, не буде імпортований.
+    Товари, які коштують понад $1000, не будуть імпортовані.
+    Товари, позначені як «зняті з виробництва», будуть імпортовані, але дата зняття буде встановлена як поточна.
+    Товари, які не були правильно вставлені, повинні бути внесені до звіту в кінці процесу імпорту.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Поради: Шукайте існуючі рішення/бібліотеки, які можуть допомогти організувати код імпорту та всі правила в гарну об'єктно-орієнтовану програму.
 
-## Code of Conduct
+Додаткові роздуми: Оскільки дані надаються зовнішнім джерелом, вони можуть містити певні проблеми:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    Чи правильно відформатовані дані для CSV.
+    Чи правильно відформатовані дані для використання з базою даних.
+    Можливі проблеми з кодуванням даних або проблеми з кінцівками рядків.
+    Можлива ручна зміна файлу, що може зробити деякі записи недійсними.
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Вам слід або вирішити ці проблеми в коді, або вказати в своєму відгуку, як би ви їх вирішили, якби у вас було більше часу для розробки скрипту.
